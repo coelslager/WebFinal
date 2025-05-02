@@ -6,25 +6,28 @@ const expressLayout = require('express-ejs-layouts');
 const connectDB = require('./server/config/db')
 
 const app = express();
-const PORT = 3000 || process.env.PORT;
+const PORT = process.env.PORT;
 
 const session = require('express-session');
 
 app.use(session({
-    secret: 'your-secret-key',
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {maxAge: 1000 * 60 * 60 * 24} // 1 day
 }));
 
-//connect to DB
-connectDB();
+(async () => {
+    try {
+        await connectDB();
+    } catch (err) {
+        console.error("DB connection failed:", err.message);
+    }
+})();
 
 //be able to collect data
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
-
-app.use(express.static('public'));
 
 //templating engine
 app.use(expressLayout);
