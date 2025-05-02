@@ -1,0 +1,94 @@
+<div class="container text-center my-4">
+  <h1>All Courses</h1>
+</div>
+
+<!-- where cards will be put -->
+<% data.forEach(course => { %>
+  <div class="container my-4">
+    <div class="card">
+      <!-- Card Header -->
+      <div class="card-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#collapse-<%= course._id.toString() %>" style="cursor: pointer;">
+        <div><strong><%= course.course_name %></strong></div>
+        <div class="d-flex align-items-center">
+          <span class="me-2"><%= course.days %></span>
+          <span class="toggle-icon bi bi-caret-right-square"></span>
+        </div>
+      </div>
+
+      <!-- Collapsible Content -->
+      <div id="collapse-<%= course._id.toString() %>" class="collapse">
+        <div class="card-body">
+          <p><strong>Description:</strong> <%= course.description %></p>
+          <p><strong>Time:</strong> <%= course.times %></p>
+          <p><strong>Location:</strong> <%= course.location %></p>
+          <p><strong>Instructor:</strong> <%= course.teacher_id.name %></p>
+          <a href="#" class="btn btn-primary <%= locals.user.authType === 'teacher' ? 'd-none' : '' %>" id="addCourseButton-<%= course._id.toString() %>">Join</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<% }) %>
+
+<!-- JavaScript for button click and icon toggle -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Handle button clicks for 'Join' buttons
+    document.body.addEventListener('click', function(event) {
+      if (event.target && event.target.classList.contains('btn-primary')) {
+        // This ensures the click handler works for dynamically created buttons
+        event.preventDefault(); // Prevent default link behavior
+
+        const studentId = '<%= locals.user.id %>';  // Get the user ID from the template
+        const courseId = event.target.id.replace('addCourseButton-', '');  // Extract course ID from button ID
+
+        console.log('Sending studentId and courseId:', { studentId, courseId });
+
+        // Validate studentId and courseId
+        if (!studentId || !courseId) {
+          alert('Missing studentId or courseId');
+          return;
+        }
+
+        // Send POST request to add the course
+        fetch('/add-course', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ studentId, courseId }), // Send the data as JSON
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Course added successfully:', data);
+          // Optionally redirect or update the UI after successful request
+          window.location.href = '/schedule';  // Redirect to the schedule page
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      }
+    });
+
+    // Handle collapsible card icon toggle
+    document.querySelectorAll('.card-header').forEach(cardHeader => {
+      const toggleIcon = cardHeader.querySelector('.toggle-icon');
+      const cardBody = cardHeader.nextElementSibling;
+
+      cardHeader.addEventListener('click', () => {
+        // Toggle the card body visibility
+        cardBody.classList.toggle('expanded');
+
+        // Change the icon depending on whether the card is expanded or not
+        if (cardBody.classList.contains('expanded')) {
+          toggleIcon.classList.remove('bi-caret-right-square');
+          toggleIcon.classList.add('bi-caret-down-square');
+        } else {
+          toggleIcon.classList.remove('bi-caret-down-square');
+          toggleIcon.classList.add('bi-caret-right-square');
+        }
+      });
+    });
+  });
+</script>
+
+

@@ -1,0 +1,89 @@
+<div class="container text-center my-4">
+  <h1>My Courses</h1>
+</div>
+
+<!-- New Course Button -->
+
+  <div class="d-flex justify-content-end">
+      <a href="newcourse" class="btn btn-success mb-4 ms-auto">New Course</a>
+  </div>
+
+  <!-- Dynamically Generated Course Cards -->
+  <% data.forEach(course => { %>  
+  <div class="container my-4">
+    <div class="card">
+      <!-- Card Header -->
+      <div class="card-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#collapse-<%= course._id.toString() %>" style="cursor: pointer;">
+          <div><strong><%= course.course_name %></strong></div>
+          <div class="d-flex align-items-center">
+              <span class="me-2"><%= course.days %></span>
+              <span class="toggle-icon"> <i class="bi bi-caret-right-square"></i> </span>
+          </div>
+      </div>
+
+      <!-- Collapsible Content -->
+      <div id="collapse-<%= course._id.toString() %>" class="collapse">
+          <div class="card-body">
+              <p><strong>Description:</strong> <%= course.description %></p>
+              <p><strong>Time:</strong> <%= course.times %></p>
+              <p><strong>Location:</strong> <%= course.location %></p>
+              <p><strong>Instructor:</strong> <%= course.teacher_id.name %></p>
+              <a href="#" class="btn btn-danger" data-course-id="<%= course._id %>">Delete Course</a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <% }); %>
+
+
+<!-- JavaScript for icon toggle and delete action -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Handle collapsible card icon toggle
+      document.querySelectorAll('.card-header').forEach(cardHeader => {
+          const toggleIcon = cardHeader.querySelector('.toggle-icon i');
+          const cardBody = cardHeader.nextElementSibling;
+
+          cardHeader.addEventListener('click', () => {
+              // Toggle the card body visibility
+              cardBody.classList.toggle('expanded');
+
+              // Change the icon depending on whether the card is expanded or not
+              if (cardBody.classList.contains('expanded')) {
+                  toggleIcon.classList.remove('bi-caret-right-square');
+                  toggleIcon.classList.add('bi-caret-down-square');
+              } else {
+                  toggleIcon.classList.remove('bi-caret-down-square');
+                  toggleIcon.classList.add('bi-caret-right-square');
+              }
+          });
+      });
+
+      // Handle the delete course button click event
+      document.body.addEventListener('click', function(event) {
+          if (event.target && event.target.classList.contains('btn-danger')) {
+              const courseId = event.target.getAttribute('data-course-id');
+              if (courseId) {
+                  deleteCourse(courseId);
+              }
+          }
+      });
+
+      function deleteCourse(courseId) {
+          // Delete course from student array, teacher array, and from the courses
+          fetch('/delete-course', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ courseId }) // Send the courseId as JSON
+          })
+          .then(res => res.json())
+          .then(data => {
+              console.log(data.message);
+              window.location.reload(); // Reload the page after successful deletion
+          })
+          .catch(err => console.error('Error:', err));
+      }
+  });
+</script>

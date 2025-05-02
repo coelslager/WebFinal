@@ -1,0 +1,60 @@
+<div class="container text-center my-4">
+    <h2>Course Manager</h2>
+    <h5>Create Account</h5>
+  </div>
+  
+  <div class="container my-5 d-flex justify-content-center">
+    <form action="/register" method="POST" style="width: 100%; max-width: 400px;">
+      <!-- Radio buttons -->
+      <div class="mb-3 text-center">
+        <label class="form-label">Choose One:</label>
+        <div class="d-flex justify-content-center">
+          <div class="form-check me-3">
+            <input class="form-check-input" type="radio" name="userType" id="student" value="Student" required>
+            <label class="form-check-label" for="student">Student</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="userType" id="teacher" value="Teacher" required>
+            <label class="form-check-label" for="teacher">Teacher</label>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Name -->
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required>
+      </div>
+  
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+      </div>
+  
+      <!-- Password -->
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
+      </div>
+  
+      <!-- Confirm Password -->
+      <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+      </div>
+  
+      <!-- Create Account Button -->
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-primary">Create Account</button>
+      </div>
+  
+      <!-- Login Link -->
+      <div class="text-center">
+        <p class="mb-2 text-muted" style="font-size: .92rem;">Already have an account?</p>
+        <a href="/login" class="btn btn-outline-secondary btn-sm">Login</a>
+      </div>
+    </form>
+  </div>
+  
+  
